@@ -104,7 +104,23 @@ public class PanelButtonQuest extends PanelButtonStorage<DBEntry<IQuest>>
 		list.add(QuestTranslation.translate(quest.getProperty(NativeProps.NAME)) + (!Minecraft.getMinecraft().gameSettings.advancedItemTooltips ? "" : (" #" + qID)));
 		
 		UUID playerID = QuestingAPI.getQuestingUUID(player);
-		
+		if(quest.getProperty(NativeProps.GLOBAL_REPEAT_TIME) > 0){
+			long time = getRepeatSeconds(quest);
+            DecimalFormat df = new DecimalFormat("00");
+            String timeTxt = "";
+
+            if(time >= 3600)
+            {
+                timeTxt += (time/3600) + "h " + df.format((time%3600)/60) + "m ";
+            } else if(time >= 60)
+            {
+                timeTxt += (time/60) + "m ";
+            }
+
+            timeTxt += df.format(time%60) + "s";
+
+            list.add(TextFormatting.GRAY + QuestTranslation.translate("betterquesting.tooltip.repeat", timeTxt));
+		}
 		if(quest.isComplete(playerID))
 		{
 			list.add(TextFormatting.GREEN + QuestTranslation.translate("betterquesting.tooltip.complete"));
@@ -196,7 +212,11 @@ public class PanelButtonQuest extends PanelButtonStorage<DBEntry<IQuest>>
 		
 		return list;
     }
-    
+
+    private long getRepeatSeconds(IQuest quest){
+		return (quest.getProperty(NativeProps.GLOBAL_LAST_RESET_TIME) + quest.getProperty(NativeProps.GLOBAL_REPEAT_TIME)) * 86400 + QuestSettings.INSTANCE.getProperty(NativeProps.GLOBAL_RESET_HOUR) * 3600L - System.currentTimeMillis()/1000;
+	}
+
 	private long getRepeatSeconds(IQuest quest, EntityPlayer player)
 	{
 		if(quest.getProperty(NativeProps.REPEAT_TIME) < 0) return -1;

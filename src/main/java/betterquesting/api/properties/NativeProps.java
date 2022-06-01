@@ -1,15 +1,10 @@
 package betterquesting.api.properties;
 
+import betterquesting.api.properties.basic.*;
 import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
 import betterquesting.api.enums.EnumLogic;
 import betterquesting.api.enums.EnumQuestVisibility;
-import betterquesting.api.properties.basic.PropertyTypeBoolean;
-import betterquesting.api.properties.basic.PropertyTypeEnum;
-import betterquesting.api.properties.basic.PropertyTypeFloat;
-import betterquesting.api.properties.basic.PropertyTypeInteger;
-import betterquesting.api.properties.basic.PropertyTypeItemStack;
-import betterquesting.api.properties.basic.PropertyTypeString;
 import betterquesting.api.utils.BigItemStack;
 
 // TODO: SPLIT THIS DAMN FILE UP. It's already too big and it needs to be divided up per-purpose
@@ -36,6 +31,11 @@ public class NativeProps
 	
 	public static final IPropertyType<Integer> REPEAT_TIME =				new PropertyTypeInteger(new ResourceLocation("betterquesting:repeatTime"), -1);
 	public static final IPropertyType<Boolean> REPEAT_REL =				    new PropertyTypeBoolean(new ResourceLocation("betterquesting:repeat_relative"), true);
+
+	public static final IPropertyType<Integer> GLOBAL_REPEAT_TIME =			new PropertyTypeInteger(new ResourceLocation("betterquesting:global_repeat_time"), -1);
+	public static final IPropertyType<Long> GLOBAL_LAST_RESET_TIME =		new PropertyTypeLong(new ResourceLocation("betterquesting:global_last_reset_time"), -1L);
+	public static final IPropertyType<Long> GLOBAL_RESET_DAY =				new PropertyTypeLong(new ResourceLocation("betterquesting:global_reset_day"), -1L);
+	public static final IPropertyType<Integer> GLOBAL_RESET_HOUR =			new PropertyTypeInteger(new ResourceLocation("betterquesting:global_reset_hour"), 0);
 	
 	public static final IPropertyType<String> SOUND_UNLOCK =				new PropertyTypeString(new ResourceLocation("betterquesting:snd_unlock"), "minecraft:ui.button.click");
 	public static final IPropertyType<String> SOUND_UPDATE =				new PropertyTypeString(new ResourceLocation("betterquesting:snd_update"), "minecraft:entity.player.levelup");

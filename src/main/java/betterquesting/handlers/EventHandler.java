@@ -8,6 +8,8 @@ import betterquesting.api.events.QuestEvent.Type;
 import betterquesting.api.placeholders.FluidPlaceholder;
 import betterquesting.api.properties.NativeProps;
 import betterquesting.api.questing.IQuest;
+import betterquesting.api.questing.IQuestLine;
+import betterquesting.api.questing.IQuestLineEntry;
 import betterquesting.api.questing.party.IParty;
 import betterquesting.api.storage.BQ_Settings;
 import betterquesting.api2.cache.CapabilityProviderQuestCache;
@@ -25,6 +27,7 @@ import betterquesting.network.handlers.NetNameSync;
 import betterquesting.network.handlers.NetNotices;
 import betterquesting.network.handlers.NetQuestSync;
 import betterquesting.questing.QuestDatabase;
+import betterquesting.questing.QuestLineDatabase;
 import betterquesting.questing.party.PartyInvitations;
 import betterquesting.questing.party.PartyManager;
 import betterquesting.storage.LifeDatabase;
@@ -389,5 +392,26 @@ public class EventHandler
         }
         
         if(server.getTickCounter() % 60 == 0) PartyInvitations.INSTANCE.cleanExpired();
+        if (server.getTickCounter() % 20 == 0) {
+            long currentDay = System.currentTimeMillis() / 86400000;
+            long currentHour = (System.currentTimeMillis() % 86400000) / 3600000;
+            if ((QuestSettings.INSTANCE.getProperty(NativeProps.GLOBAL_RESET_DAY) <= currentDay) &&
+                    (QuestSettings.INSTANCE.getProperty(NativeProps.GLOBAL_RESET_HOUR) <= currentHour)) {
+                List<DBEntry<IQuestLine>> lineList = QuestLineDatabase.INSTANCE.getSortedEntries();
+                for(DBEntry<IQuestLine> dbEntry : lineList){
+                    List<DBEntry<IQuestLineEntry>> ql = dbEntry.getValue().getEntries();
+                    for(DBEntry<IQuestLineEntry> qID : ql){
+                        IQuest q = QuestDatabase.INSTANCE.getValue(qID.getID());
+                        if(q == null) continue;
+                        if((q.getProperty(NativeProps.GLOBAL_REPEAT_TIME) > 0) &&
+                                (currentDay - q.getProperty(NativeProps.GLOBAL_LAST_RESET_TIME) >= q.getProperty(NativeProps.GLOBAL_REPEAT_TIME))){
+                            q.resetUser(null, true);
+                            q.setProperty(NativeProps.GLOBAL_LAST_RESET_TIME, currentDay);
+                        }
+                    }
+                }
+                QuestSettings.INSTANCE.setProperty(NativeProps.GLOBAL_RESET_DAY, currentDay + 1);
+            }
+        }
     }
 }
