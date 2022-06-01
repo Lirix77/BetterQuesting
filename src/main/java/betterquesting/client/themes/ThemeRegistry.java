@@ -14,7 +14,7 @@ import betterquesting.api2.client.gui.themes.GuiKey;
 import betterquesting.api2.client.gui.themes.IGuiTheme;
 import betterquesting.api2.client.gui.themes.IThemeRegistry;
 import betterquesting.api2.client.gui.themes.presets.*;
-import betterquesting.client.gui2.GuiHome;
+import betterquesting.client.gui2.GuiQuestLines;
 import betterquesting.client.gui2.editors.GuiFileBrowser;
 import betterquesting.client.gui2.editors.GuiTextEditor;
 import betterquesting.client.gui2.editors.nbt.GuiEntitySelection;
@@ -69,7 +69,7 @@ public class ThemeRegistry implements IThemeRegistry
 		PresetLine.registerLines(this);
 		PresetColor.registerColors(this);
         
-        setDefaultGui(PresetGUIs.HOME, arg -> new GuiHome(arg.parent));
+        setDefaultGui(PresetGUIs.HOME, arg -> new GuiQuestLines(arg.parent));
         
         setDefaultGui(PresetGUIs.EDIT_NBT, arg ->
         {
@@ -327,7 +327,7 @@ public class ThemeRegistry implements IThemeRegistry
         
         if(getCurrentTheme() != null) func = activeTheme.getGui(key);
         if(func == null) func = (Function<T, GuiScreen>)defGuis.get(key);
-        
+
         return func == null ? null : func.apply(args);
     }
 	
