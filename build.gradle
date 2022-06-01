@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        jcenter()
         maven {
             name = "forge"
             url = "https://files.minecraftforge.net/maven"
@@ -38,6 +37,7 @@ repositories {
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 processResources {
